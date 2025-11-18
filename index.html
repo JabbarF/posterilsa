@@ -102,7 +102,7 @@
         HALAMAN LOGIN (DI TAMPILKAN PERTAMA KALI)
         ========================================
     -->
-    <div id="login-page" class="absolute inset-0 z-50">
+    <div id="login-page" class="absolute inset-0 z-50 hidden">
         <div class="login-card bg-white p-8 rounded-2xl shadow-2xl">
             <div class="text-center mb-8">
                 <div class="font-extrabold text-4xl text-primary flex items-center justify-center mb-2">
@@ -159,7 +159,7 @@
         STRUKTUR DASHBOARD UTAMA
         ========================================
     -->
-    <div id="app-container" class="flex flex-col md:flex-row min-h-screen w-full hidden">
+    <div id="app-container" class="flex flex-col md:flex-row min-h-screen w-full">
         
         <!-- Sidebar / Navigasi Global -->
         <nav class="sidebar bg-white shadow-2xl flex flex-col p-6 sticky top-0 z-20">
@@ -177,7 +177,7 @@
 
             <!-- Menu Navigasi (Role-Specific) -->
             <!-- Customer Navigation -->
-            <div id="nav-customer" class="role-menu space-y-2 hidden">
+            <div id="nav-customer" class="role-menu space-y-2">
                 <a onclick="loadContent('customer', 'home', this)" class="nav-item active flex items-center p-3 rounded-xl bg-primary text-white font-semibold shadow-md"><i data-lucide="home" class="w-5 h-5 mr-3"></i> Beranda</a>
                 <a onclick="loadContent('customer', 'active-orders', this)" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="calendar-check" class="w-5 h-5 mr-3"></i> Pesanan Aktif</a>
                 <a onclick="loadContent('customer', 'history', this)" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="history" class="w-5 h-5 mr-3"></i> Riwayat Jasa</a>
@@ -469,8 +469,7 @@
             </div>
         </div>
     </script>
-    
-    <!-- ADMIN TEMPLATES -->
+
     <script id="content-admin-home" type="text/template">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <!-- Kartu Statistik Utama -->
@@ -762,12 +761,20 @@
             }
         }
 
-        // --- INISIALISASI ---
-
+        // --- INISIALISASI (DEFAULT CUSTOMER DASHBOARD) ---
+        
         document.addEventListener('DOMContentLoaded', () => {
-            // Pastikan halaman login terlihat saat startup
-            document.getElementById('login-page').classList.remove('hidden');
-            document.getElementById('app-container').classList.add('hidden');
+            // Mengatur role dan user default ke Customer untuk tampilan langsung
+            currentRole = 'customer';
+            loggedInUser = mockUsers.customer;
+            
+            // Sembunyikan halaman login dan tampilkan container aplikasi
+            document.getElementById('login-page').classList.add('hidden');
+            document.getElementById('app-container').classList.remove('hidden');
+
+            // Muat konten home customer (Ambil item navigasi pertama untuk status active)
+            const defaultNavItem = document.querySelector(`#nav-${currentRole} .nav-item`);
+            loadContent(currentRole, 'home', defaultNavItem);
         });
     </script>
 
