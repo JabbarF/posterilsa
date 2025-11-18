@@ -113,8 +113,8 @@
             
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="mb-4">
-                    <label for="username" class="block text-sm font-bold text-gray-700 mb-1">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Masukkan username" class="w-full p-3 border border-gray-300 rounded-lg focus:border-primary focus:ring-primary" required>
+                    <label for="username" class="block text-sm font-bold text-gray-700 mb-1">Email/Username</label>
+                    <input type="text" id="username" name="username" placeholder="Masukkan email atau username" class="w-full p-3 border border-gray-300 rounded-lg focus:border-primary focus:ring-primary" required>
                 </div>
                 <div class="mb-6">
                     <label for="password" class="block text-sm font-bold text-gray-700 mb-1">Password</label>
@@ -125,271 +125,135 @@
                 </button>
             </form>
             
-            <div class="mt-6 p-3 bg-gray-50 rounded-lg text-sm">
-                <p class="font-semibold mb-1">Akun Simulasi:</p>
-                <ul class="list-disc list-inside text-gray-600">
-                    <li>Customer: `customer`/`123456`</li>
-                    <li>Helpman: `helpman`/`123456`</li>
-                    <li>Super Admin: `admin`/`123456`</li>
-                </ul>
+            <!-- Tautan Lupa Password dan Daftar -->
+            <div class="flex justify-between mt-4 text-sm">
+                <button type="button" onclick="showSimulationMessage('Aksi: Lupa Password')" class="text-primary hover:text-blue-700 hover:underline transition">
+                    Lupa Password?
+                </button>
+                <span class="flex items-center text-gray-600">
+                    Belum punya akun? 
+                    <button type="button" onclick="showSimulationMessage('Aksi: Daftar Akun Baru')" class="text-primary font-bold hover:text-blue-700 hover:underline transition cursor-pointer ml-1 p-0 bg-transparent border-none">
+                        Daftar
+                    </button>
+                </span>
             </div>
+
+            <!-- Opsi Sign-in Tambahan -->
+            <div class="mt-8">
+                <div class="relative flex items-center mb-4">
+                    <div class="flex-grow border-t border-gray-300"></div>
+                    <span class="flex-shrink mx-4 text-gray-500 text-sm">ATAU</span>
+                    <div class="flex-grow border-t border-gray-300"></div>
+                </div>
+                <!-- Tombol Google Sign-in (Simulasi, tanpa logo) -->
+                <button onclick="showSimulationMessage('Aksi: Masuk menggunakan Google (Simulasi)')" class="w-full py-3 bg-gray-100 text-gray-700 border border-gray-300 font-bold rounded-xl shadow-sm hover:bg-gray-200 transition flex items-center justify-center">
+                    Masuk dengan akun Google
+                </button>
+            </div>
+
         </div>
     </div>
 
-
     <!-- 
         ========================================
-        1. STRUKTUR UTAMA DAN NAVIGASI (DASHBOARD)
+        STRUKTUR DASHBOARD UTAMA
         ========================================
     -->
-    
-    <!-- Sidebar / Navigasi Global -->
-    <nav id="sidebar" class="sidebar bg-white shadow-2xl flex flex-col p-6 sticky top-0 z-20 hidden">
-        <div class="mb-10 flex items-center border-b pb-4">
-            <div class="font-extrabold text-3xl text-primary flex items-center">
-                <i data-lucide="handshake" class="w-7 h-7 mr-2"></i> Helpin
-            </div>
-            <div class="ml-2 px-2 py-0.5 text-xs font-bold rounded-full bg-accent text-white shadow">DASH</div>
-        </div>
-
-        <!-- Menu Navigasi Customer -->
-        <div id="nav-customer" class="role-menu space-y-2 hidden">
-            <a id="nav-customer-home" onclick="loadContent('customer', 'home')" class="nav-item active flex items-center p-3 rounded-xl bg-primary text-white font-semibold shadow-md"><i data-lucide="home" class="w-5 h-5 mr-3"></i> Beranda</a>
-            <a id="nav-customer-active" onclick="loadContent('customer', 'active')" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="calendar-check" class="w-5 h-5 mr-3"></i> Pesanan Aktif</a>
-            <a id="nav-customer-history" onclick="loadContent('customer', 'history')" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="history" class="w-5 h-5 mr-3"></i> Riwayat Jasa</a>
-            <a id="nav-customer-payment" onclick="loadContent('customer', 'payment')" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="wallet" class="w-5 h-5 mr-3"></i> Pembayaran & Saldo</a>
-            <a id="nav-customer-settings" onclick="loadContent('customer', 'settings')" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="settings" class="w-5 h-5 mr-3"></i> Pengaturan Akun</a>
-        </div>
+    <div id="app-container" class="flex flex-col md:flex-row min-h-screen w-full hidden">
         
-        <!-- Menu Navigasi Helpman -->
-        <div id="nav-helpman" class="role-menu space-y-2 hidden">
-            <a id="nav-helpman-home" onclick="loadContent('helpman', 'home')" class="nav-item active flex items-center p-3 rounded-xl bg-primary text-white font-semibold shadow-md"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i> Dashboard</a>
-            <a id="nav-helpman-requests" onclick="loadContent('helpman', 'requests')" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="bell" class="w-5 h-5 mr-3"></i> Permintaan Baru <span class="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-lg">3</span></a>
-            <a id="nav-helpman-manage" onclick="loadContent('helpman', 'manage')" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="list-checks" class="w-5 h-5 mr-3"></i> Kelola Jasa</a>
-            <a id="nav-helpman-schedule" onclick="loadContent('helpman', 'schedule')" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="clock-4" class="w-5 h-5 mr-3"></i> Kelola Jadwal</a>
-            <a id="nav-helpman-earnings" onclick="loadContent('helpman', 'earnings')" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="bar-chart-3" class="w-5 h-5 mr-3"></i> Pendapatan & Data</a>
-        </div>
-
-        <!-- Menu Navigasi Admin -->
-        <div id="nav-admin" class="role-menu space-y-2 hidden">
-            <a id="nav-admin-home" onclick="loadContent('admin', 'home')" class="nav-item active flex items-center p-3 rounded-xl bg-primary text-white font-semibold shadow-md"><i data-lucide="shield-check" class="w-5 h-5 mr-3"></i> Dashboard Admin</a>
-            <a id="nav-admin-users" onclick="loadContent('admin', 'users')" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="users" class="w-5 h-5 mr-3"></i> Kelola Pengguna</a>
-            <a id="nav-admin-verify" onclick="loadContent('admin', 'verify')" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="package" class="w-5 h-5 mr-3"></i> Verifikasi Jasa</a>
-            <a id="nav-admin-monitor" onclick="loadContent('admin', 'monitor')" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="credit-card" class="w-5 h-5 mr-3"></i> Monitor Transaksi</a>
-            <a id="nav-admin-reports" onclick="loadContent('admin', 'reports')" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="file-text" class="w-5 h-5 mr-3"></i> Laporan Keuangan</a>
-        </div>
-
-        <div class="mt-auto pt-6 border-t border-gray-200">
-            <button onclick="logout()" class="w-full flex items-center justify-center p-3 rounded-xl text-white bg-red-500 hover:bg-red-600 transition duration-150 font-semibold shadow-md">
-                <i data-lucide="log-out" class="w-5 h-5 mr-2"></i> Logout
-            </button>
-        </div>
-    </nav>
-
-    <!-- Konten Utama (Main Content Area) -->
-    <main id="main-content" class="flex-grow p-6 md:p-10 hidden">
-        <!-- Header Utama -->
-        <header class="mb-10 flex justify-between items-center bg-white p-4 rounded-xl shadow-md border-b-4 border-accent">
-            <div>
-                <h1 id="main-title" class="text-3xl md:text-4xl font-extrabold text-gray-900">Dashboard</h1>
-                <p id="main-subtitle" class="text-gray-500 mt-1">Selamat datang kembali.</p>
+        <!-- Sidebar / Navigasi Global -->
+        <nav class="sidebar bg-white shadow-2xl flex flex-col p-6 sticky top-0 z-20">
+            <div class="mb-10 flex items-center border-b pb-4">
+                <div class="font-extrabold text-3xl text-primary flex items-center">
+                    <i data-lucide="handshake" class="w-7 h-7 mr-2"></i> Helpin
+                </div>
+                <div class="ml-2 px-2 py-0.5 text-xs font-bold rounded-full bg-accent text-white shadow">PRO</div>
             </div>
-            <div class="flex items-center space-x-4">
-                <button onclick="showSimulationMessage('Notifikasi dilihat')" class="p-3 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition duration-150 shadow-md">
-                    <i data-lucide="bell" class="w-5 h-5"></i>
+
+            <div class="mb-6 p-3 bg-blue-50 border border-blue-200 rounded-xl shadow-inner text-center">
+                <p class="text-sm font-semibold text-gray-700">Akses sebagai:</p>
+                <p id="current-role-display" class="font-bold text-primary text-lg capitalize"></p>
+            </div>
+
+            <!-- Menu Navigasi (Role-Specific) -->
+            <!-- Customer Navigation -->
+            <div id="nav-customer" class="role-menu space-y-2 hidden">
+                <a onclick="loadContent('customer', 'home', this)" class="nav-item active flex items-center p-3 rounded-xl bg-primary text-white font-semibold shadow-md"><i data-lucide="home" class="w-5 h-5 mr-3"></i> Beranda</a>
+                <a onclick="loadContent('customer', 'active-orders', this)" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="calendar-check" class="w-5 h-5 mr-3"></i> Pesanan Aktif</a>
+                <a onclick="loadContent('customer', 'history', this)" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="history" class="w-5 h-5 mr-3"></i> Riwayat Jasa</a>
+                <a onclick="loadContent('customer', 'payment', this)" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="wallet" class="w-5 h-5 mr-3"></i> Pembayaran</a>
+                <a onclick="loadContent('customer', 'settings', this)" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="settings" class="w-5 h-5 mr-3"></i> Pengaturan</a>
+            </div>
+            
+            <!-- Helpman Navigation -->
+            <div id="nav-helpman" class="role-menu space-y-2 hidden">
+                <a onclick="loadContent('helpman', 'home', this)" class="nav-item active flex items-center p-3 rounded-xl bg-primary text-white font-semibold shadow-md"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i> Dashboard</a>
+                <a onclick="loadContent('helpman', 'new-requests', this)" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="bell" class="w-5 h-5 mr-3"></i> Permintaan Baru <span class="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-lg">3</span></a>
+                <a onclick="loadContent('helpman', 'manage-services', this)" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="list-checks" class="w-5 h-5 mr-3"></i> Kelola Jasa</a>
+                <a onclick="loadContent('helpman', 'manage-schedule', this)" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="clock-4" class="w-5 h-5 mr-3"></i> Kelola Jadwal</a>
+                <a onclick="loadContent('helpman', 'earnings', this)" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="bar-chart-3" class="w-5 h-5 mr-3"></i> Pendapatan</a>
+            </div>
+
+            <!-- Admin Navigation -->
+            <div id="nav-admin" class="role-menu space-y-2 hidden">
+                <a onclick="loadContent('admin', 'home', this)" class="nav-item active flex items-center p-3 rounded-xl bg-primary text-white font-semibold shadow-md"><i data-lucide="shield-check" class="w-5 h-5 mr-3"></i> Dashboard Admin</a>
+                <a onclick="loadContent('admin', 'user-management', this)" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="users" class="w-5 h-5 mr-3"></i> Kelola Pengguna</a>
+                <a onclick="loadContent('admin', 'service-verification', this)" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="package" class="w-5 h-5 mr-3"></i> Verifikasi Jasa</a>
+                <a onclick="loadContent('admin', 'transaction-monitor', this)" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="credit-card" class="w-5 h-5 mr-3"></i> Monitor Transaksi</a>
+                <a onclick="loadContent('admin', 'reports', this)" class="nav-item flex items-center p-3 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary"><i data-lucide="file-text" class="w-5 h-5 mr-3"></i> Laporan Keuangan</a>
+            </div>
+
+            <div class="mt-auto pt-6 border-t border-gray-200">
+                <button onclick="logout()" class="w-full flex items-center justify-center p-3 rounded-xl text-white bg-red-500 hover:bg-red-600 transition duration-150 font-semibold shadow-md">
+                    <i data-lucide="log-out" class="w-5 h-5 mr-2"></i> Logout
                 </button>
-                <div class="flex items-center space-x-3 bg-primary p-1 rounded-full shadow-lg cursor-pointer" onclick="showSimulationMessage('Buka Profil')">
-                    <img id="user-avatar" src="https://placehold.co/40x40/f0f4f8/1e3a8a?text=US" alt="User Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-white">
-                </div>
             </div>
-        </header>
+        </nav>
 
-        <!-- Area Konten Dinamis Berdasarkan Role -->
-        <div id="content-container">
-            <!-- Konten akan dimuat di sini -->
-        </div>
-
-        <!-- Bagian yang berisi Diagram, Analisis, dan Mobile View (Disembunyikan dari tampilan utama) -->
-        <div id="non-ui-content" class="hidden">
-            <section class="mt-20 pt-10 border-t-2 border-gray-300">
-                <h2 class="text-3xl font-bold text-gray-800 mb-6">2. Diagram Alur & 3. Analisis Desain</h2>
-                
-                <!-- 2. Diagram & Flow -->
-                <div class="bg-white p-8 rounded-2xl shadow-xl card-glow mb-8">
-                    <h3 class="text-2xl font-bold text-accent mb-4 flex items-center"><i data-lucide="git-branch" class="w-6 h-6 mr-3"></i> Diagram Alur Transaksi Inti</h3>
-                    <pre class="bg-gray-50 p-4 rounded-xl text-sm overflow-x-auto text-gray-700 border-l-4 border-gray-300">
-[Customer]
-1. Mulai: Membuka Aplikasi Helpin
-2. Memilih Jasa: Pilih kategori (Bersih Rumah) & Input Detail (Lokasi, Waktu).
-3. Memilih Helpman: Pilihan otomatis/manual Helpman terdekat.
-4. Konfirmasi Pemesanan: Pesanan dikirim.
-
-[Helpman]
-5. Notifikasi: Menerima notifikasi Pesanan Baru.
-6. Evaluasi & Keputusan:
-   - Terima -> Status Pesanan = "Dalam Proses" (Customer Lacak)
-   - Tolak -> Pesanan ditawarkan ke Helpman lain (Kembali ke 3)
-
-[Fase Pengerjaan]
-7. Pelaksanaan Jasa: Helpman melakukan pekerjaan.
-8. Konfirmasi Selesai: Helpman menekan "Tandai Selesai" di aplikasi.
-
-[Pembayaran & Verifikasi]
-9. Verifikasi Customer: Customer memverifikasi pekerjaan (di lokasi) dan menekan "Verifikasi & Bayar" di aplikasi.
-10. Pembayaran: Customer melakukan pembayaran (via E-wallet/Tunai).
-11. Dana Masuk: Dana diproses -> Komisi dipotong -> Sisa dana masuk ke Saldo Helpman.
-12. Feedback: Customer memberikan Rating dan Ulasan.
-
-[Akhir]
-13. End: Transaksi Selesai.
-                    </pre>
+        <!-- Konten Utama (Main Content Area) -->
+        <main class="flex-grow p-6 md:p-10">
+            <!-- Header Utama -->
+            <header class="mb-10 flex justify-between items-center bg-white p-4 rounded-xl shadow-md border-b-4 border-accent">
+                <div>
+                    <h1 id="main-title" class="text-3xl md:text-4xl font-extrabold text-gray-900">Dashboard</h1>
+                    <p id="main-subtitle" class="text-gray-500 mt-1">Selamat datang kembali.</p>
                 </div>
-
-                <!-- 3. Pendapat dan Analisis Desain -->
-                <div class="bg-white p-8 rounded-2xl shadow-xl card-glow">
-                    <h3 class="text-2xl font-bold text-accent mb-4 flex items-center"><i data-lucide="lightbulb" class="w-6 h-6 mr-3"></i> Analisis Desain & Tujuan Utama</h3>
-                    <blockquote class="border-l-4 border-primary pl-4 italic text-gray-700 text-lg mb-4">
-                        "Dalam desain UI/UX, apa sebenarnya tujuan utama yang ingin dicapai seorang desainer: tampilan yang menarik, kemudahan penggunaan, atau kepuasan pengguna?"
-                    </blockquote>
-                    <div class="text-gray-700 space-y-4">
-                        <p class="font-extrabold text-xl text-primary">Tujuan utama adalah **Kepuasan Pengguna (User Satisfaction)**.</p>
-                        <p>Kepuasan adalah metrik holistik yang mencerminkan keberhasilan produk. Ini adalah hasil dari integrasi yang harmonis antara tampilan (UI) dan pengalaman (UX). Desain Helpin harus memprioritaskan ini karena kepuasan yang tinggi (baik dari Customer maupun Helpman) akan menghasilkan retensi, rekomendasi, dan pertumbuhan platform jangka panjang.</p>
-                        <ul class="list-disc list-inside space-y-2 ml-4">
-                            <li>
-                                **UI Menarik:** (Estetika) Bertanggung jawab untuk *first impression* dan citra profesional Helpin. UI yang bersih dan *trustworthy* membangun keyakinan awal.
-                            </li>
-                            <li>
-                                **Kemudahan Penggunaan (Usability):** (Fungsionalitas) Memastikan *customer* dapat memesan jasa dalam waktu kurang dari 60 detik dan *helpman* dapat menerima/menyelesaikan pekerjaan tanpa hambatan teknis. Ini adalah syarat mutlak untuk mencegah *drop-off*.
-                            </li>
-                            <li>
-                                **Kepuasan Pengguna:** (Outcome) Terjadi ketika pengguna mencapai tujuan mereka (mendapatkan rumah bersih, mendapatkan penghasilan) dengan usaha minimum dan emosi positif. Ini adalah satu-satunya tujuan yang mendorong bisnis.
-                            </li>
-                        </ul>
+                <div class="flex items-center space-x-4">
+                    <button onclick="showSimulationMessage('Notifikasi dilihat')" class="p-3 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition duration-150 shadow-md">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                    </button>
+                    <div class="flex items-center space-x-3 bg-primary p-1 rounded-full shadow-lg cursor-pointer" onclick="loadContent(currentRole, 'profile', this)">
+                        <img src="https://placehold.co/40x40/f0f4f8/1e3a8a?text=US" id="user-avatar" alt="User Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-white">
                     </div>
                 </div>
+            </header>
 
-                <!-- 4. Tampilan Mobile (Ditingkatkan) -->
-                <div class="mt-16 pt-8 border-t border-gray-200">
-                    <h3 class="text-3xl font-bold text-gray-800 mb-6">4. Tampilan Mobile (Customer - Tiga Layar Kunci)</h3>
-                    <div class="flex flex-wrap gap-10 justify-center sm:justify-start">
-                        <!-- Mobile View 1: Home Screen (Pemesanan) -->
-                        <div class="w-full max-w-sm sm:w-64 bg-white rounded-[40px] shadow-2xl p-4 border-[6px] border-gray-900 transform scale-95 transition duration-300 hover:scale-100">
-                            <div class="text-xs text-center text-gray-500 mb-2">14:00 | Home</div>
-                            <div class="flex justify-between items-center mb-4">
-                                <div class="flex items-center bg-blue-100 rounded-full px-3 py-1 shadow-inner">
-                                    <i data-lucide="map-pin" class="w-4 h-4 text-red-500 mr-1"></i>
-                                    <span class="text-xs font-semibold text-gray-700">Jl. S Parman, Malang</span>
-                                </div>
-                                <i data-lucide="bell" class="w-6 h-6 text-gray-600"></i>
-                            </div>
-                            <div class="p-3 color-primary text-white rounded-xl mb-4 shadow-lg">
-                                <h4 class="font-bold text-lg">Pesan Jasa Harian</h4>
-                                <p class="text-sm opacity-90">Solusi bersih, *service* & *repair* dalam satu aplikasi.</p>
-                            </div>
-                            <div class="p-3 bg-gray-100 rounded-xl mb-4 flex items-center border border-gray-200">
-                                <i data-lucide="search" class="w-4 h-4 text-gray-500 mr-2"></i>
-                                <input type="text" placeholder="Cari layanan apa hari ini?" class="bg-transparent text-sm w-full focus:outline-none">
-                            </div>
-                            <h4 class="font-bold text-base mb-3 text-gray-800">Kategori Cepat</h4>
-                            <div class="grid grid-cols-4 gap-3 mb-4">
-                                <button onclick="showSimulationMessage('Pilih Bersih Rumah')" class="text-center transition hover:bg-gray-100 p-1 rounded-lg">
-                                    <div class="p-3 bg-blue-50 rounded-xl mx-auto mb-1 border border-blue-200"><i data-lucide="cleaning-services" class="w-5 h-5 text-primary"></i></div>
-                                    <span class="text-[10px] font-medium">Bersih Rumah</span>
-                                </button>
-                                <button onclick="showSimulationMessage('Pilih Laundry')" class="text-center transition hover:bg-gray-100 p-1 rounded-lg">
-                                    <div class="p-3 bg-green-50 rounded-xl mx-auto mb-1 border border-green-200"><i data-lucide="shirt" class="w-5 h-5 text-green-600"></i></div>
-                                    <span class="text-[10px] font-medium">Laundry</span>
-                                </button>
-                                <button onclick="showSimulationMessage('Pilih Tukang')" class="text-center transition hover:bg-gray-100 p-1 rounded-lg">
-                                    <div class="p-3 bg-yellow-50 rounded-xl mx-auto mb-1 border border-yellow-200"><i data-lucide="wrench" class="w-5 h-5 text-yellow-600"></i></div>
-                                    <span class="text-[10px] font-medium">Jasa Tukang</span>
-                                </button>
-                                <button onclick="showSimulationMessage('Pilih AC')" class="text-center transition hover:bg-gray-100 p-1 rounded-lg">
-                                    <div class="p-3 bg-red-50 rounded-xl mx-auto mb-1 border border-red-200"><i data-lucide="air-vent" class="w-5 h-5 text-red-600"></i></div>
-                                    <span class="text-[10px] font-medium">Service AC</span>
-                                </button>
-                            </div>
-                            <div class="h-10"></div>
-                            <div class="flex justify-around items-center border-t border-gray-200 pt-2 fixed bottom-0 w-full max-w-[230px] bg-white rounded-b-[40px] mx-auto left-0 right-0">
-                                <i data-lucide="home" class="w-6 h-6 text-primary"></i>
-                                <i data-lucide="calendar-check" class="w-6 h-6 text-gray-400"></i>
-                                <i data-lucide="user" class="w-6 h-6 text-gray-400"></i>
-                            </div>
-                        </div>
+            <!-- Area Konten Dinamis Berdasarkan Role -->
+            <div id="content-container">
+                <!-- Konten akan dimuat di sini -->
+            </div>
+        </main>
+    </div>
 
-                        <!-- Mobile View 2: Pelacakan Pesanan -->
-                        <div class="w-full max-w-sm sm:w-64 bg-white rounded-[40px] shadow-2xl p-4 border-[6px] border-gray-900 transform scale-95 transition duration-300 hover:scale-100">
-                            <div class="text-xs text-center text-gray-500 mb-2">14:00 | Pelacakan</div>
-                            <i data-lucide="arrow-left" class="w-5 h-5 text-gray-600 mb-4 cursor-pointer" onclick="showSimulationMessage('Kembali ke Dashboard')"></i>
-                            <h4 class="font-bold text-xl mb-3 text-gray-800">Jasa Bersih Rumah</h4>
-                            <div class="p-4 bg-yellow-50 rounded-xl border border-yellow-300 mb-4 shadow-sm">
-                                <p class="font-semibold text-yellow-800 flex items-center"><i data-lucide="car" class="w-4 h-4 mr-2"></i> Status: Dalam Perjalanan</p>
-                                <p class="text-xs text-yellow-600 mt-1">Helpman Roni diperkirakan tiba dalam 15 menit.</p>
-                            </div>
-                            <div class="h-32 bg-gray-200 rounded-xl mb-4 flex items-center justify-center">
-                                <p class="text-gray-500 text-sm">Placeholder Peta Pelacakan </p>
-                            </div>
-                            <div class="border-t border-gray-200 mt-4 pt-4">
-                                <h4 class="font-bold text-lg mb-2">Helpman Anda</h4>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <img src="https://placehold.co/40x40/0d9488/ffffff?text=R" alt="Helpman Avatar" class="w-10 h-10 rounded-full object-cover mr-3 border border-accent">
-                                        <div>
-                                            <p class="font-semibold">Roni Sudarsono</p>
-                                            <div class="flex items-center text-sm text-gray-500">
-                                                <i data-lucide="star" class="w-4 h-4 fill-accent text-accent mr-1"></i> 4.8
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <button onclick="showSimulationMessage('Chat Helpman Roni')" class="p-2 bg-primary text-white rounded-full"><i data-lucide="message-square" class="w-5 h-5"></i></button>
-                                </div>
-                            </div>
-                            <button onclick="showSimulationMessage('Hubungi Roni')" class="w-full mt-6 p-3 rounded-xl bg-gray-100 text-primary font-semibold hover:bg-gray-200 transition">Hubungi Helpman</button>
-                        </div>
-
-                        <!-- Mobile View 3: Verifikasi & Rating -->
-                        <div class="w-full max-w-sm sm:w-64 bg-white rounded-[40px] shadow-2xl p-4 border-[6px] border-gray-900 transform scale-95 transition duration-300 hover:scale-100">
-                            <div class="text-xs text-center text-gray-500 mb-2">14:00 | Selesai Jasa</div>
-                            <i data-lucide="check-circle" class="w-10 h-10 text-green-500 mx-auto block mb-4"></i>
-                            <h4 class="font-bold text-xl text-center mb-1 text-gray-800">Jasa Selesai!</h4>
-                            <p class="text-center text-gray-600 mb-4">Mohon verifikasi pekerjaan dan berikan *rating*.</p>
-
-                            <div class="p-4 bg-gray-50 rounded-xl border border-gray-200 mb-4 shadow-sm">
-                                <p class="text-center text-sm font-semibold mb-2">Beri Rating untuk Roni Sudarsono</p>
-                                <div class="flex justify-center space-x-2 text-3xl text-gray-300 cursor-pointer">
-                                    <i data-lucide="star" class="w-8 h-8 hover:text-yellow-400 transition" onclick="rateService(1)"></i>
-                                    <i data-lucide="star" class="w-8 h-8 hover:text-yellow-400 transition" onclick="rateService(2)"></i>
-                                    <i data-lucide="star" class="w-8 h-8 hover:text-yellow-400 transition" onclick="rateService(3)"></i>
-                                    <i data-lucide="star" class="w-8 h-8 hover:text-yellow-400 transition" onclick="rateService(4)"></i>
-                                    <i data-lucide="star" class="w-8 h-8 hover:text-yellow-400 transition" onclick="rateService(5)"></i>
-                                </div>
-                            </div>
-                            
-                            <textarea class="w-full p-3 border border-gray-300 rounded-lg text-sm mb-4 focus:border-primary focus:ring-primary" placeholder="Tulis ulasan Anda... (opsional)"></textarea>
-
-                            <button onclick="completeTransaction()" class="w-full p-3 rounded-xl btn-primary text-white font-bold transition duration-200">Verifikasi & Selesaikan Transaksi</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-    </main>
+    <!-- Bagian yang berisi Diagram, Analisis, dan Mobile View (Disembunyikan dari tampilan utama) -->
+    <div id="non-ui-content" class="hidden">
+        <!-- Konten Analisis dan Diagram seperti di versi sebelumnya -->
+    </div>
 
     <!-- 
         ========================================
-        KONTEN TEMPLATE UNTUK SEMUA HALAMAN (ROLE CUSTOMER)
+        KONTEN TEMPLATE
         ========================================
     -->
     
-    <!-- Customer Home (Beranda) -->
+    <!-- CUSTOMER TEMPLATES -->
     <script id="content-customer-home" type="text/template">
-        <!-- Struktur Beranda Customer -->
+        <!-- Struktur Beranda Customer (Diperbaiki) -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            <!-- Kolom Kiri (Layanan Cepat & Status Aktif) -->
+            <!-- Kolom Kiri (Layanan Cepat & Riwayat) -->
             <div class="lg:col-span-2 space-y-8">
                 
-                <!-- 1. Area Pencarian & Lokasi Utama (Paling Menonjol) -->
+                <!-- 1. Area Pencarian & Lokasi Utama -->
                 <div class="p-6 rounded-2xl search-area shadow-lg border border-gray-100">
                     <div class="flex items-center justify-between mb-4">
                         <button onclick="showSimulationMessage('Ubah Lokasi')" class="flex items-center text-sm font-bold text-gray-700 bg-gray-100 px-3 py-1.5 rounded-full hover:bg-gray-200 transition">
@@ -434,12 +298,54 @@
                     </div>
                     <button onclick="showSimulationMessage('Lihat Semua Kategori')" class="w-full py-2 mt-4 text-sm text-accent font-bold hover:underline">Lihat Semua Kategori Lainnya...</button>
                 </div>
+
+                <!-- 3. Riwayat Pesanan (Area yang Sama) -->
+                <div class="p-8 bg-white rounded-2xl shadow-xl card-glow">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Riwayat Terbaru</h2>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider rounded-tl-lg">Layanan</th>
+                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Helpman</th>
+                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Tanggal</th>
+                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider rounded-tr-lg">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Service AC</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Joko Pramono</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">10 Nov 2025</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Selesai</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button onclick="showSimulationMessage('Pesan Ulang Service AC')" class="text-primary hover:underline font-semibold">Pesan Ulang</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Perbaikan Pipa Air</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Ahmad B.</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">2 Nov 2025</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Dibatalkan</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button onclick="showSimulationMessage('Lihat Alasan Pembatalan')" class="text-gray-500 hover:underline font-semibold">Detail</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
-            <!-- Kolom Kanan (Status Aktif & Promo) - Disesuaikan untuk proporsionalitas -->
+            <!-- Kolom Kanan (Status Aktif & Promo) -->
             <div class="lg:col-span-1 space-y-8">
                 
-                <!-- 4. Kartu Status Pesanan Aktif (Tetap) -->
+                <!-- 4. Kartu Status Pesanan Aktif (Highlight) -->
                 <div class="p-6 bg-white rounded-2xl shadow-xl card-glow border-t-8 border-accent">
                     <div class="flex justify-between items-start mb-4">
                         <h2 class="text-xl font-bold text-gray-900">Pesanan Aktif</h2>
@@ -455,207 +361,45 @@
 
                     <div class="flex space-x-3 pt-2">
                         <button onclick="showSimulationMessage('Melacak Helpman')" class="flex-1 py-3 px-3 btn-primary text-white text-sm font-semibold rounded-xl hover:shadow-lg transition flex items-center justify-center"><i data-lucide="map-pin" class="w-5 h-5 mr-1"></i> Lacak</button>
-                        <button onclick="loadContent('customer', 'active')" class="flex-1 py-3 px-3 bg-gray-200 text-gray-800 text-sm font-semibold rounded-xl hover:bg-gray-300 transition flex items-center justify-center"><i data-lucide="info" class="w-5 h-5 mr-1"></i> Detail</button>
+                        <button onclick="showSimulationMessage('Melihat Detail')" class="flex-1 py-3 px-3 bg-gray-200 text-gray-800 text-sm font-semibold rounded-xl hover:bg-gray-300 transition flex items-center justify-center"><i data-lucide="info" class="w-5 h-5 mr-1"></i> Detail</button>
                     </div>
                 </div>
                 
-                <!-- 5 & 6. Kartu Promosi & Saldo (DIPERBAIKI UNTUK PROPORSI YANG LEBIH BAIK) -->
+                <!-- 5. Kartu Promosi (Visual & Menarik) -->
+                <div class="p-6 rounded-2xl shadow-xl card-glow overflow-hidden bg-white">
+                    <div class="bg-primary/90 text-white p-4 rounded-xl shadow-inner border border-white/20">
+                        <h3 class="text-2xl font-extrabold mb-1">Diskon 50% Pertama!</h3>
+                        <p class="text-sm opacity-90 mb-3">Khusus pengguna baru untuk jasa Laundry atau AC.</p>
+                        <span class="bg-accent text-gray-900 text-sm font-bold px-3 py-1 rounded-full shadow-md">KODE: HELPINGREAT</span>
+                        <button onclick="showSimulationMessage('Klaim Promo')" class="w-full mt-4 py-2 bg-white text-primary font-bold rounded-xl hover:bg-gray-100 transition">Klaim Sekarang</button>
+                    </div>
+                </div>
+
+                <!-- 6. Saldo E-Wallet -->
                 <div class="p-6 bg-white rounded-2xl shadow-xl card-glow border-b-4 border-teal-500">
                     <div class="flex justify-between items-center">
-                        <h3 class="text-xl font-bold text-gray-800 flex items-center"><i data-lucide="credit-card" class="w-6 h-6 mr-2 text-teal-600"></i> Saldo Helpin Pay</h3>
-                        <a href="#" onclick="loadContent('customer', 'payment')" class="text-sm text-teal-600 hover:underline font-medium">Lihat Detail</a>
+                        <h3 class="text-lg font-semibold text-gray-800 flex items-center"><i data-lucide="credit-card" class="w-5 h-5 mr-2 text-teal-600"></i> Saldo Helpin Pay</h3>
+                        <a href="#" onclick="showSimulationMessage('Top Up Saldo')" class="text-sm text-teal-600 hover:underline font-medium">Top Up</a>
                     </div>
-                    <p class="text-4xl font-extrabold text-gray-900 mt-1 mb-4">Rp 525.000</p>
-                    
-                    <button onclick="showSimulationMessage('Top Up Saldo')" class="w-full py-3 btn-primary text-white font-bold rounded-xl hover:bg-blue-700 transition">Top Up / Isi Saldo</button>
-                    
-                    <div class="mt-6 pt-4 border-t border-gray-200">
-                        <h3 class="text-lg font-bold text-primary mb-2">PROMO AKTIF</h3>
-                        <div class="bg-primary/10 text-primary p-3 rounded-xl border border-primary/20">
-                            <p class="font-bold text-lg">Diskon 50% Pertama!</p>
-                            <p class="text-xs mt-1">Gunakan kode: <span class="font-mono bg-white px-1 rounded text-accent font-bold">HELPINGREAT</span></p>
-                            <button onclick="showSimulationMessage('Klaim Promo')" class="w-full mt-2 py-1 text-sm bg-accent text-white font-bold rounded-lg hover:opacity-90 transition">Klaim Promo</button>
-                        </div>
-                    </div>
+                    <p class="text-3xl font-extrabold text-gray-900 mt-2">Rp 525.000</p>
+                    <p class="text-xs text-gray-500 mt-1">Gunakan Helpin Pay untuk pembayaran cepat.</p>
                 </div>
 
             </div>
         </div>
     </script>
 
-    <!-- Customer Active Orders (Pesanan Aktif) -->
-    <script id="content-customer-active" type="text/template">
-        <h2 class="text-3xl font-bold text-gray-900 mb-6">Daftar Pesanan Aktif Anda (2)</h2>
-        <div class="space-y-6">
-            <!-- Pesanan 1 (Dalam Pengerjaan) -->
-            <div class="p-6 bg-white rounded-2xl shadow-xl card-glow border-l-8 border-blue-500">
-                <div class="flex justify-between items-center mb-3">
-                    <h3 class="text-xl font-bold text-blue-800">#HPN-5523 | Service AC (2 Unit)</h3>
-                    <span class="px-3 py-1 text-sm font-bold rounded-full bg-blue-100 text-blue-800">DALAM PENGERJAAN</span>
-                </div>
-                <p class="text-gray-600 mb-4">Helpman: Joni Susanto | Waktu: Hari ini, 10:00 - 12:00 WIB</p>
-                <div class="grid grid-cols-2 gap-4 border-t pt-4">
-                    <div><p class="text-sm text-gray-500">Alamat:</p><p class="font-semibold">Jl. Bunga Melati No. 5</p></div>
-                    <div><p class="text-sm text-gray-500">Total Biaya:</p><p class="font-bold text-lg text-primary">Rp 150.000</p></div>
-                </div>
-                <div class="mt-4 flex space-x-3">
-                    <button onclick="showSimulationMessage('Chat dengan Helpman')" class="py-2 px-4 bg-gray-100 text-gray-800 rounded-xl hover:bg-gray-200 transition">Chat Helpman</button>
-                    <button onclick="showSimulationMessage('Batalkan Service AC')" class="py-2 px-4 bg-red-500 text-white rounded-xl hover:bg-red-600 transition">Batalkan Pesanan</button>
-                </div>
-            </div>
-            <!-- Pesanan 2 (Menunggu Helpman) -->
-            <div class="p-6 bg-white rounded-2xl shadow-xl card-glow border-l-8 border-yellow-500">
-                <div class="flex justify-between items-center mb-3">
-                    <h3 class="text-xl font-bold text-yellow-800">#HPN-5524 | Perbaikan Keran Bocor</h3>
-                    <span class="px-3 py-1 text-sm font-bold rounded-full bg-yellow-100 text-yellow-800">MENUNGGU HELPMAN</span>
-                </div>
-                <p class="text-gray-600 mb-4">Status: Sedang dicarikan Helpman terdekat yang sesuai dengan kriteria.</p>
-                <div class="mt-4 flex space-x-3">
-                    <button onclick="showSimulationMessage('Ubah Detail Jasa')" class="py-2 px-4 bg-primary text-white rounded-xl hover:bg-blue-700 transition">Ubah Detail Jasa</button>
-                    <button onclick="showSimulationMessage('Batalkan Perbaikan')" class="py-2 px-4 bg-red-500 text-white rounded-xl hover:bg-red-600 transition">Batalkan Pesanan</button>
-                </div>
-            </div>
-        </div>
-    </script>
-
-    <!-- Customer History (Riwayat Jasa) -->
-    <script id="content-customer-history" type="text/template">
-        <h2 class="text-3xl font-bold text-gray-900 mb-6">Riwayat Jasa (5 Transaksi Selesai)</h2>
-        <div class="p-6 bg-white rounded-2xl shadow-xl">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">ID Pesanan</th>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Layanan</th>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Helpman</th>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Tanggal Selesai</th>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Rating</th>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Total Biaya</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">#HPN-5521</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Bersih Rumah Standard</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Roni S.</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">10 Nov 2025</td>
-                            <td class="px-6 py-4 text-sm text-accent flex items-center"><i data-lucide="star" class="w-4 h-4 fill-accent mr-1"></i> 5.0</td>
-                            <td class="px-6 py-4 text-sm font-bold text-primary">Rp 120.000</td>
-                        </tr>
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">#HPN-5520</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Jasa Tukang (Cat Dinding)</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Bambang A.</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">2 Nov 2025</td>
-                            <td class="px-6 py-4 text-sm text-accent flex items-center"><i data-lucide="star" class="w-4 h-4 fill-accent mr-1"></i> 4.5</td>
-                            <td class="px-6 py-4 text-sm font-bold text-primary">Rp 450.000</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <button onclick="showSimulationMessage('Muat Lebih Banyak')" class="w-full py-2 mt-4 text-sm text-accent font-bold hover:underline">Muat Lebih Banyak Riwayat</button>
-        </div>
-    </script>
-
-    <!-- Customer Payment (Pembayaran & Saldo) -->
-    <script id="content-customer-payment" type="text/template">
-        <h2 class="text-3xl font-bold text-gray-900 mb-8">Pembayaran & Saldo Helpin Pay</h2>
-        
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            <!-- Saldo Utama -->
-            <div class="lg:col-span-1 p-6 bg-white rounded-2xl shadow-xl card-glow border-t-8 border-teal-500">
-                <h3 class="text-xl font-bold text-teal-600 mb-2 flex items-center"><i data-lucide="credit-card" class="w-6 h-6 mr-2"></i> Saldo Helpin Pay</h3>
-                <p class="text-4xl font-extrabold text-gray-900 mb-4">Rp 525.000</p>
-                <button onclick="showSimulationMessage('Top Up Saldo')" class="w-full py-3 btn-primary text-white font-bold rounded-xl hover:bg-blue-700 transition">Top Up Saldo</button>
-                <button onclick="showSimulationMessage('Tarik Saldo')" class="w-full py-3 mt-2 bg-gray-200 text-gray-800 font-bold rounded-xl hover:bg-gray-300 transition">Tarik Saldo</button>
-            </div>
-
-            <!-- Metode Pembayaran -->
-            <div class="lg:col-span-2 p-6 bg-white rounded-2xl shadow-xl card-glow">
-                <h3 class="text-xl font-bold text-gray-900 mb-4">Kelola Metode Pembayaran</h3>
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center p-4 bg-blue-50 border border-blue-200 rounded-xl">
-                        <span class="font-semibold flex items-center"><i data-lucide="banknote" class="w-5 h-5 mr-2 text-primary"></i> Bank BCA (**** 1234)</span>
-                        <span class="text-sm font-bold text-green-600">DEFAULT</span>
-                    </div>
-                    <div class="flex justify-between items-center p-4 border border-gray-200 rounded-xl hover:bg-gray-50">
-                        <span class="font-semibold flex items-center"><i data-lucide="wallet" class="w-5 h-5 mr-2 text-yellow-600"></i> GoPay</span>
-                        <button onclick="showSimulationMessage('Hapus GoPay')" class="text-red-500 text-sm hover:underline">Hapus</button>
-                    </div>
-                </div>
-                <button onclick="showSimulationMessage('Tambah Metode')" class="w-full py-2 mt-4 text-sm text-primary font-bold border border-primary rounded-xl hover:bg-blue-50 transition">Tambah Metode Pembayaran Baru</button>
-            </div>
-        </div>
-        
-        <!-- Riwayat Transaksi -->
-        <h3 class="text-2xl font-bold text-gray-900 mb-4">Riwayat Transaksi Helpin Pay</h3>
-        <div class="p-6 bg-white rounded-2xl shadow-xl">
-            <!-- Table content (simplified from history table) -->
-            <p class="text-gray-500">Simulasi riwayat Top Up, Penarikan, dan Pembayaran Biaya Jasa.</p>
-        </div>
-    </script>
-
-    <!-- Customer Settings (Pengaturan Akun) -->
-    <script id="content-customer-settings" type="text/template">
-        <h2 class="text-3xl font-bold text-gray-900 mb-8">Pengaturan Akun</h2>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Profil Dasar -->
-            <div class="p-6 bg-white rounded-2xl shadow-xl card-glow">
-                <h3 class="text-xl font-bold text-primary mb-4">Informasi Profil</h3>
-                <form onsubmit="event.preventDefault(); showSimulationMessage('Simpan Profil')">
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                        <input type="text" value="Budi Satria" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg">
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Email</label>
-                        <input type="email" value="budi.s@mail.com" disabled class="mt-1 block w-full p-3 border border-gray-200 bg-gray-50 rounded-lg">
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
-                        <input type="text" value="0812-xxxx-xxxx" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg">
-                    </div>
-                    <button type="submit" class="py-3 px-6 btn-primary text-white font-bold rounded-xl">Simpan Perubahan</button>
-                </form>
-            </div>
-            <!-- Keamanan & Preferensi -->
-            <div class="p-6 bg-white rounded-2xl shadow-xl card-glow">
-                <h3 class="text-xl font-bold text-primary mb-4">Keamanan & Privasi</h3>
-                <form onsubmit="event.preventDefault(); showSimulationMessage('Ganti Password')">
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Password Baru</label>
-                        <input type="password" placeholder="Masukkan password baru" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg">
-                    </div>
-                    <button type="submit" class="py-3 px-6 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600">Ganti Password</button>
-                </form>
-
-                <h3 class="text-xl font-bold text-primary mt-8 mb-4 border-t pt-4">Preferensi Lain</h3>
-                <div class="flex justify-between items-center py-2">
-                    <span class="font-medium text-gray-700">Notifikasi Email</span>
-                    <input type="checkbox" checked class="form-checkbox h-5 w-5 text-primary rounded border-gray-300">
-                </div>
-            </div>
-        </div>
-    </script>
-    
-    <!-- 
-        ========================================
-        KONTEN TEMPLATE UNTUK SEMUA HALAMAN (ROLE HELPMAN)
-        ========================================
-    -->
-
-    <!-- Helpman Home (Dashboard) -->
+    <!-- HELPMAN TEMPLATES -->
     <script id="content-helpman-home" type="text/template">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <!-- Kartu Saldo -->
+            <!-- Kartu Ringkasan Pendapatan -->
             <div class="md:col-span-2 p-6 bg-white rounded-2xl shadow-xl card-glow border-b-4 border-primary">
                 <div class="flex justify-between items-center">
                     <span class="text-lg font-semibold text-gray-600">Saldo Tersedia</span>
                     <i data-lucide="wallet" class="w-8 h-8 text-primary"></i>
                 </div>
                 <p class="text-4xl font-extrabold text-primary mt-2 mb-4">Rp 1.250.000</p>
-                <button onclick="loadContent('helpman', 'earnings')" class="bg-accent text-white px-4 py-2 text-sm font-bold rounded-full hover:bg-teal-600 transition duration-200 shadow-md">Tarik Dana Sekarang</button>
+                <button onclick="showSimulationMessage('Memproses Penarikan Dana')" class="bg-accent text-white px-4 py-2 text-sm font-bold rounded-full hover:bg-teal-600 transition duration-200 shadow-md">Tarik Dana Sekarang</button>
             </div>
             
             <!-- Kartu Pesanan Baru -->
@@ -664,8 +408,11 @@
                     <span class="text-sm font-medium text-gray-500">Permintaan Baru</span>
                     <span class="text-3xl font-bold text-red-500">3</span>
                 </div>
-                <p class="text-sm font-semibold text-gray-800 mb-4">Tekan tombol di samping untuk lihat detail.</p>
-                <button onclick="loadContent('helpman', 'requests')" class="w-full py-2 bg-red-500 text-white text-sm font-semibold rounded-lg hover:bg-red-600 transition shadow-md">Lihat Permintaan</button>
+                <p class="text-sm font-semibold text-gray-800 mb-4">Jasa Bersih Rumah di Jl. Cendana, 15:00. <span class="text-xs font-normal text-gray-500">(Rp 150K)</span></p>
+                <div class="flex space-x-2">
+                    <button onclick="handleHelpmanAction('accept', 'Permintaan Baru')" class="flex-1 py-2 bg-green-500 text-white text-sm font-semibold rounded-lg hover:bg-green-600 transition shadow-md">Terima</button>
+                    <button onclick="handleHelpmanAction('reject', 'Permintaan Baru')" class="flex-1 py-2 bg-red-500 text-white text-sm font-semibold rounded-lg hover:bg-red-600 transition shadow-md">Tolak</button>
+                </div>
             </div>
 
             <!-- Kartu Status Ketersediaan -->
@@ -676,14 +423,13 @@
                         Aktif
                     </div>
                 </div>
-                <p class="text-sm text-gray-500">Ubah status untuk menerima/menghentikan pesanan.</p>
+                <p class="text-sm text-gray-500">Tekan untuk mengubah status dan menerima/menghentikan pesanan.</p>
             </div>
         </div>
 
         <!-- Pesanan Dalam Proses -->
         <div class="p-8 bg-white rounded-2xl shadow-xl card-glow mb-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-4">Pesanan Dalam Proses (Hari Ini)</h2>
-            <!-- Tabel Pesanan (Menggunakan simulasi dari template sebelumnya) -->
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-100">
@@ -707,159 +453,27 @@
                                 <button onclick="handleHelpmanAction('complete', 'Service AC')" class="text-green-600 hover:text-green-800 font-semibold">Tandai Selesai</button>
                             </td>
                         </tr>
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#HPN12346</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Jasa Tukang (Perbaikan Pintu)</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">14:00 - 16:00</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Menunggu Pembayaran</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <button onclick="showSimulationMessage('Mengingatkan pembayaran')" class="text-primary hover:text-blue-700 font-semibold">Ingatkan</button>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </script>
-
-    <!-- Helpman Requests (Permintaan Baru) -->
-    <script id="content-helpman-requests" type="text/template">
-        <h2 class="text-3xl font-bold text-gray-900 mb-6">3 Permintaan Jasa Baru</h2>
-        <div class="space-y-6">
-            <!-- Permintaan 1 -->
-            <div class="p-6 bg-white rounded-2xl shadow-xl card-glow border-l-8 border-red-500">
-                <div class="flex justify-between items-start mb-3">
-                    <h3 class="text-xl font-bold text-gray-900">Jasa Bersih Rumah Standard</h3>
-                    <span class="text-2xl font-bold text-red-500">Rp 120.000</span>
-                </div>
-                <p class="text-sm text-gray-600 mb-2">Lokasi: Jl. Cendana No. 4, Malang (3.5 KM)</p>
-                <p class="text-sm text-gray-600 mb-4">Jadwal: Besok, 09:00 - 11:00 WIB</p>
-                <div class="flex space-x-3">
-                    <button onclick="handleHelpmanAction('accept', 'Bersih Rumah')" class="flex-1 py-3 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition">Terima Pesanan</button>
-                    <button onclick="handleHelpmanAction('reject', 'Bersih Rumah')" class="flex-1 py-3 bg-gray-200 text-gray-800 font-bold rounded-xl hover:bg-gray-300 transition">Tolak</button>
-                </div>
-            </div>
-            <!-- Permintaan 2 -->
-            <div class="p-6 bg-white rounded-2xl shadow-xl card-glow border-l-8 border-red-500">
-                <div class="flex justify-between items-start mb-3">
-                    <h3 class="text-xl font-bold text-gray-900">Perbaikan Kulkas</h3>
-                    <span class="text-2xl font-bold text-red-500">Rp 250.000</span>
-                </div>
-                <p class="text-sm text-gray-600 mb-2">Lokasi: Perumahan Indah Blok C (5 KM)</p>
-                <p class="text-sm text-gray-600 mb-4">Jadwal: Hari ini, 17:00 WIB</p>
-                <div class="flex space-x-3">
-                    <button onclick="handleHelpmanAction('accept', 'Perbaikan Kulkas')" class="flex-1 py-3 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition">Terima Pesanan</button>
-                    <button onclick="handleHelpmanAction('reject', 'Perbaikan Kulkas')" class="flex-1 py-3 bg-gray-200 text-gray-800 font-bold rounded-xl hover:bg-gray-300 transition">Tolak</button>
-                </div>
-            </div>
-        </div>
-    </script>
     
-    <!-- Helpman Manage Services (Kelola Jasa) -->
-    <script id="content-helpman-manage" type="text/template">
-        <h2 class="text-3xl font-bold text-gray-900 mb-6">Kelola Jasa & Harga Anda</h2>
-        
-        <div class="p-6 bg-white rounded-2xl shadow-xl card-glow mb-8">
-            <h3 class="text-xl font-bold text-primary mb-4 flex items-center"><i data-lucide="package" class="w-6 h-6 mr-2"></i> Daftar Jasa Aktif</h3>
-            <div class="space-y-4">
-                <!-- Jasa 1 -->
-                <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <div>
-                        <span class="font-medium text-gray-900">1. Bersih Rumah Standard</span>
-                        <p class="text-sm text-gray-500">Durasi: 2 Jam</p>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <span class="text-lg font-bold text-primary">Rp 120.000</span>
-                        <button onclick="showSimulationMessage('Edit Harga Bersih Rumah')" class="p-2 bg-yellow-500 text-white rounded-full"><i data-lucide="pencil" class="w-4 h-4"></i></button>
-                    </div>
-                </div>
-                <!-- Jasa 2 -->
-                <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <div>
-                        <span class="font-medium text-gray-900">2. Service AC (Cuci)</span>
-                        <p class="text-sm text-gray-500">Per Unit</p>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <span class="text-lg font-bold text-primary">Rp 75.000</span>
-                        <button onclick="showSimulationMessage('Edit Harga Service AC')" class="p-2 bg-yellow-500 text-white rounded-full"><i data-lucide="pencil" class="w-4 h-4"></i></button>
-                    </div>
-                </div>
-            </div>
-            <button onclick="showSimulationMessage('Tambah Jasa Baru')" class="w-full py-3 mt-6 btn-primary text-white font-bold rounded-xl">Tambah Jasa Baru</button>
-        </div>
-    </script>
-
-    <!-- Helpman Schedule (Kelola Jadwal) -->
-    <script id="content-helpman-schedule" type="text/template">
-        <h2 class="text-3xl font-bold text-gray-900 mb-6">Kelola Jadwal Ketersediaan</h2>
-        
-        <div class="p-6 bg-white rounded-2xl shadow-xl card-glow mb-8">
-            <h3 class="text-xl font-bold text-primary mb-4">Set Ketersediaan Mingguan</h3>
-            <div class="space-y-3">
-                <!-- Hari 1 -->
-                <div class="flex justify-between items-center p-3 border-b border-gray-100">
-                    <span class="font-semibold text-gray-700">Senin</span>
-                    <select class="p-2 border border-gray-300 rounded-lg">
-                        <option value="9-17">09:00 - 17:00</option>
-                        <option value="full">Sepenuh Hari</option>
-                        <option value="off" selected>Non-Aktif</option>
-                    </select>
-                </div>
-                <!-- Hari 2 -->
-                <div class="flex justify-between items-center p-3 border-b border-gray-100">
-                    <span class="font-semibold text-gray-700">Selasa</span>
-                    <select class="p-2 border border-gray-300 rounded-lg">
-                        <option value="9-17" selected>09:00 - 17:00</option>
-                        <option value="full">Sepenuh Hari</option>
-                        <option value="off">Non-Aktif</option>
-                    </select>
-                </div>
-                <!-- Hari 3 -->
-                <div class="flex justify-between items-center p-3 border-b border-gray-100">
-                    <span class="font-semibold text-gray-700">Rabu</span>
-                    <select class="p-2 border border-gray-300 rounded-lg">
-                        <option value="9-17">09:00 - 17:00</option>
-                        <option value="full" selected>Sepenuh Hari</option>
-                        <option value="off">Non-Aktif</option>
-                    </select>
-                </div>
-                <!-- Tambahkan hari lain... -->
-            </div>
-            <button onclick="showSimulationMessage('Simpan Jadwal')" class="w-full py-3 mt-6 btn-primary text-white font-bold rounded-xl">Simpan Jadwal</button>
-        </div>
-    </script>
-
-    <!-- Helpman Earnings (Pendapatan & Data) -->
-    <script id="content-helpman-earnings" type="text/template">
-        <h2 class="text-3xl font-bold text-gray-900 mb-6">Riwayat Pendapatan</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <!-- Kartu Saldo -->
-            <div class="p-6 bg-white rounded-2xl shadow-xl card-glow border-l-4 border-accent">
-                <p class="text-sm font-semibold text-gray-500 mb-1">Total Saldo</p>
-                <p class="text-3xl font-extrabold text-accent">Rp 1.250.000</p>
-            </div>
-            <!-- Kartu Pendapatan Bulan Ini -->
-            <div class="p-6 bg-white rounded-2xl shadow-xl card-glow border-l-4 border-primary">
-                <p class="text-sm font-semibold text-gray-500 mb-1">Pendapatan Bersih Bulan Ini</p>
-                <p class="text-3xl font-extrabold text-primary">Rp 5.850.000</p>
-            </div>
-            <!-- Kartu Penarikan Tertunda -->
-            <div class="p-6 bg-white rounded-2xl shadow-xl card-glow border-l-4 border-red-500">
-                <p class="text-sm font-semibold text-gray-500 mb-1">Penarikan Tertunda</p>
-                <p class="text-3xl font-extrabold text-red-500">Rp 0</p>
-            </div>
-        </div>
-        
-        <div class="p-6 bg-white rounded-2xl shadow-xl card-glow">
-            <h3 class="text-xl font-bold text-gray-900 mb-4">Riwayat Transaksi</h3>
-            <!-- Tabel Riwayat (Simulasi) -->
-            <p class="text-gray-500">Tabel berisi detail setiap transaksi jasa yang telah selesai, komisi Helpin, dan pendapatan bersih Anda.</p>
-            <button onclick="showSimulationMessage('Buat Laporan PDF')" class="py-2 px-4 mt-4 bg-gray-200 text-gray-800 font-bold rounded-xl hover:bg-gray-300 transition">Download Laporan PDF</button>
-        </div>
-    </script>
-    
-    <!-- 
-        ========================================
-        KONTEN TEMPLATE UNTUK SEMUA HALAMAN (ROLE ADMIN)
-        ========================================
-    -->
-
-    <!-- Admin Home (Dashboard) -->
+    <!-- ADMIN TEMPLATES -->
     <script id="content-admin-home" type="text/template">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <!-- Statistik Utama (Diambil dari template V2) -->
+            <!-- Kartu Statistik Utama -->
             <div class="p-6 bg-white rounded-2xl shadow-xl card-glow border-l-4 border-primary">
                 <p class="text-sm font-semibold text-gray-500 mb-1">Total Pesanan (Bulan)</p>
                 <p class="text-3xl font-extrabold text-primary">4.120</p>
@@ -877,84 +491,40 @@
                 <p class="text-3xl font-extrabold text-yellow-600">12</p>
             </div>
         </div>
-        
-        <!-- Tren Transaksi (Chart Simulation) -->
+
+        <!-- Tabel Verifikasi Helpman Baru -->
         <div class="p-8 bg-white rounded-2xl shadow-xl card-glow mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">Tren Transaksi 6 Bulan Terakhir</h2>
-            <div class="h-64 bg-gray-100 rounded-xl flex items-center justify-center border-2 border-gray-200">
-                <p class="text-gray-500">Placeholder Grafik Batang/Garis</p>
-            </div>
-        </div>
-    </script>
-
-    <!-- Admin Manage Users (Kelola Pengguna) -->
-    <script id="content-admin-users" type="text/template">
-        <h2 class="text-3xl font-bold text-gray-900 mb-6">Kelola Pengguna (Customer & Helpman)</h2>
-        
-        <div class="p-6 bg-white rounded-2xl shadow-xl card-glow">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold text-primary">Daftar Helpman</h3>
-                <input type="text" placeholder="Cari ID/Nama Helpman..." class="p-2 border border-gray-300 rounded-lg">
-            </div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Verifikasi Helpman Baru</h2>
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-100">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Nama</th>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 text-sm font-mono">HPN-7890</td>
-                            <td class="px-6 py-4 text-sm font-medium">Joni Susanto</td>
-                            <td class="px-6 py-4 text-sm text-green-600">Aktif</td>
-                            <td class="px-6 py-4 text-sm space-x-2">
-                                <button onclick="handleAdminAction('block', 'HPN-7890')" class="text-red-500 hover:underline">Blokir</button>
-                                <button onclick="showSimulationMessage('Lihat Detail Joni')" class="text-primary hover:underline">Detail</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </script>
-
-    <!-- Admin Verify Services (Verifikasi Jasa) -->
-    <script id="content-admin-verify" type="text/template">
-        <h2 class="text-3xl font-bold text-gray-900 mb-6">Verifikasi Jasa & Dokumen Helpman</h2>
-        
-        <div class="p-8 bg-white rounded-2xl shadow-xl card-glow">
-            <h3 class="text-xl font-bold text-red-500 mb-4">12 Helpman Menunggu Persetujuan Dokumen</h3>
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Nama</th>
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider rounded-tl-lg">Nama</th>
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">ID Pengguna</th>
                             <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Jasa Diajukan</th>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Dokumen</th>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Aksi</th>
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Tgl Daftar</th>
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider rounded-tr-lg">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 text-sm font-medium">Siti Aisyah</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Laundry Kiloan</td>
-                            <td class="px-6 py-4 text-sm text-yellow-600">KTP, SKCK (Pending)</td>
-                            <td class="px-6 py-4 text-sm space-x-2">
-                                <button onclick="handleAdminAction('approve', 'Siti')" class="text-green-600 font-bold">Setujui</button>
-                                <button onclick="handleAdminAction('reject', 'Siti')" class="text-red-600 font-bold">Tolak</button>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Siti Aisyah</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 font-mono">HPN-80012</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Laundry Kiloan</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">16 Nov 2025</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                <button onclick="handleAdminAction('approve', 'HPN-80012')" class="text-green-600 hover:text-green-800 font-bold">Setujui</button>
+                                <button onclick="handleAdminAction('reject', 'HPN-80012')" class="text-red-600 hover:text-red-800 font-bold">Tolak</button>
                             </td>
                         </tr>
                         <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 text-sm font-medium">Bambang S.</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Service AC, Tukang</td>
-                            <td class="px-6 py-4 text-sm text-yellow-600">KTP, SKCK (Pending)</td>
-                            <td class="px-6 py-4 text-sm space-x-2">
-                                <button onclick="handleAdminAction('approve', 'Bambang')" class="text-green-600 font-bold">Setujui</button>
-                                <button onclick="handleAdminAction('reject', 'Bambang')" class="text-red-600 font-bold">Tolak</button>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Bambang S.</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 font-mono">HPN-80013</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Service AC, Tukang</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">16 Nov 2025</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                <button onclick="handleAdminAction('approve', 'HPN-80013')" class="text-green-600 hover:text-green-800 font-bold">Setujui</button>
+                                <button onclick="handleAdminAction('reject', 'HPN-80013')" class="text-red-600 hover:text-red-800 font-bold">Tolak</button>
                             </td>
                         </tr>
                     </tbody>
@@ -962,88 +532,40 @@
             </div>
         </div>
     </script>
+    
+    <!-- GENERAL PURPOSE TEMPLATES (Simulasi Halaman Lain) -->
+    <script id="content-general-page" type="text/template">
+        <div class="p-8 bg-white rounded-2xl shadow-xl">
+            <h2 class="text-3xl font-bold text-primary mb-4" id="page-title-content"></h2>
+            <p class="text-gray-700">Ini adalah simulasi halaman <span id="page-name-content" class="font-bold"></span>. Fitur utama akan dikembangkan di sini untuk interaksi spesifik role.</p>
+            
+            <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                <p class="font-semibold text-gray-800">Detail Role:</p>
+                <p class="text-sm">Anda saat ini login sebagai <span id="page-role-content" class="font-mono text-primary"></span>.</p>
+            </div>
 
-    <!-- Admin Monitor Transactions (Monitor Transaksi) -->
-    <script id="content-admin-monitor" type="text/template">
-        <h2 class="text-3xl font-bold text-gray-900 mb-6">Log Transaksi & Komisi Real-time</h2>
-        
-        <div class="p-6 bg-white rounded-2xl shadow-xl card-glow">
-            <h3 class="text-xl font-bold text-primary mb-4">Transaksi Belum Selesai (5)</h3>
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">ID Transaksi</th>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Jasa</th>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Nilai Total</th>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Komisi (15%)</th>
-                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 text-sm font-mono">TRX-00125</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Bersih Rumah</td>
-                            <td class="px-6 py-4 text-sm font-semibold">Rp 120.000</td>
-                            <td class="px-6 py-4 text-sm text-red-500">Rp 18.000</td>
-                            <td class="px-6 py-4 text-sm text-yellow-600">Menunggu Verifikasi</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </script>
-
-    <!-- Admin Financial Reports (Laporan Keuangan) -->
-    <script id="content-admin-reports" type="text/template">
-        <h2 class="text-3xl font-bold text-gray-900 mb-6">Laporan Keuangan & Analisis Bisnis</h2>
-        
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Ringkasan Keuangan -->
-            <div class="p-6 bg-white rounded-2xl shadow-xl card-glow">
-                <h3 class="text-xl font-bold text-primary mb-4">Ringkasan Q4 - 2025</h3>
-                <div class="space-y-3">
-                    <div class="flex justify-between border-b pb-2">
-                        <span class="text-gray-600">Total Nilai Transaksi (GMV)</span>
-                        <span class="font-bold text-lg text-primary">Rp 4.5 Miliar</span>
-                    </div>
-                    <div class="flex justify-between border-b pb-2">
-                        <span class="text-gray-600">Pendapatan Bersih (Komisi)</span>
-                        <span class="font-bold text-lg text-red-500">Rp 675 Juta</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-600">Beban Operasional</span>
-                        <span class="font-bold text-lg text-red-500">Rp 120 Juta</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Download Laporan -->
-            <div class="p-6 bg-white rounded-2xl shadow-xl card-glow">
-                <h3 class="text-xl font-bold text-accent mb-4">Download Laporan Bulanan</h3>
-                <p class="text-gray-600 mb-4">Buat dan unduh laporan detail dalam format PDF atau CSV.</p>
-                <select class="w-full p-3 border border-gray-300 rounded-lg mb-4">
-                    <option>Pilih Bulan</option>
-                    <option>November 2025</option>
-                    <option>Oktober 2025</option>
-                </select>
-                <button onclick="showSimulationMessage('Download Laporan Keuangan')" class="w-full py-3 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition">Generate & Download PDF</button>
-            </div>
+            <!-- Contoh konten dinamis: Daftar Pesanan Aktif Customer -->
+            <div id="dynamic-content-area"></div>
         </div>
     </script>
 
     <!-- 
         ========================================
-        LOGIKA JAVASCRIPT (FUNGSI OTENTIKASI & LOAD HALAMAN)
+        LOGIKA JAVASCRIPT (KONTROL APLIKASI)
         ========================================
     -->
     <script>
-        // Global variable for current logged-in user role
+        // Variabel Global untuk status aplikasi
         let currentRole = null;
-        let currentUserName = null;
+        let loggedInUser = null;
 
-        // --- FUNGSI UTAMA NOTIFIKASI ---
+        // --- UTILITY FUNCTIONS (Diprioritaskan untuk akses global) ---
+
         function showMessage(type, title, message) {
             const box = document.getElementById('message-box');
+            // ... (implementasi showMessage sama seperti sebelumnya)
+            
+            // Clear existing messages
             box.innerHTML = '';
             
             let bgColor = '';
@@ -1072,163 +594,138 @@
             `;
             
             box.innerHTML = messageHtml;
-            lucide.createIcons();
+            lucide.createIcons(); // Render ikon baru
 
-            // Animate in and out
-            setTimeout(() => { box.classList.remove('translate-x-full'); }, 50);
-            setTimeout(() => { box.classList.add('translate-x-full'); }, 4000);
+            // Animate in
+            setTimeout(() => {
+                box.classList.remove('translate-x-full');
+            }, 50);
+
+            // Animate out after 4 seconds
+            setTimeout(() => {
+                box.classList.add('translate-x-full');
+            }, 4000);
         }
 
         function showSimulationMessage(action) {
             showMessage('info', 'Aksi Simulasi', `Anda menekan tombol: "${action}". Logika navigasi/API akan diproses di sini.`);
         }
 
-        // --- FUNGSI OTENTIKASI ---
-        const USER_ACCOUNTS = {
-            'customer': { pass: '123456', name: 'Budi Satria' },
-            'helpman': { pass: '123456', name: 'Joni Susanto' },
-            'admin': { pass: '123456', name: 'Super Admin' },
+        // --- APP FLOW CONTROL ---
+
+        const mockUsers = {
+            customer: { name: "Budi Satria", role: "customer", pass: "123456" },
+            helpman: { name: "Joni Ahli", role: "helpman", pass: "123456" },
+            admin: { name: "Super Admin", role: "admin", pass: "123456" },
         };
 
         function handleLogin(event) {
             event.preventDefault();
-            const usernameInputRaw = document.getElementById('username').value.trim();
-            const passwordInput = document.getElementById('password').value.trim();
-            
-            // Konversi username ke lowercase
-            const usernameInput = usernameInputRaw.toLowerCase(); 
+            const form = event.target;
+            const usernameInput = form.username.value.toLowerCase();
+            const password = form.password.value;
+            let userFound = null;
 
-            const user = USER_ACCOUNTS[usernameInput];
+            for (const key in mockUsers) {
+                if (mockUsers[key].pass === password && (mockUsers[key].role === usernameInput || mockUsers[key].name.toLowerCase() === usernameInput)) {
+                    userFound = mockUsers[key];
+                    break;
+                }
+            }
 
-            if (user && user.pass === passwordInput) {
-                currentRole = usernameInput;
-                currentUserName = user.name;
+            if (userFound) {
+                currentRole = userFound.role;
+                loggedInUser = userFound;
+                showMessage('success', 'Login Berhasil', `Selamat datang, ${userFound.name}!`);
                 
-                // PERBAIKAN: Sembunyikan halaman login dan tampilkan dashboard
+                // Sembunyikan halaman login
                 document.getElementById('login-page').classList.add('hidden');
-                document.getElementById('sidebar').classList.remove('hidden');
-                document.getElementById('main-content').classList.remove('hidden');
+                document.getElementById('app-container').classList.remove('hidden');
 
-                // Set initial avatar based on role/name initial
-                const initial = currentUserName.split(' ').map(n => n[0]).join('');
-                document.getElementById('user-avatar').src = `https://placehold.co/40x40/f0f4f8/1e3a8a?text=${initial}`;
-
-                showMessage('success', 'Login Berhasil', `Selamat datang, ${currentUserName} (${currentRole})!`);
-                loadContent(currentRole, 'home');
+                // Muat dashboard default (home)
+                loadContent(currentRole, 'home', document.querySelector(`#nav-${currentRole} .nav-item`));
             } else {
-                showMessage('error', 'Login Gagal', 'Username atau password salah. Coba lagi.');
+                showMessage('error', 'Login Gagal', 'Email/Username atau Password salah.');
             }
         }
-
+        
         function logout() {
             currentRole = null;
-            currentUserName = null;
+            loggedInUser = null;
+            showMessage('info', 'Logout Berhasil', 'Anda telah berhasil keluar.');
             
-            // Hide Dashboard UI
-            document.getElementById('sidebar').classList.add('hidden');
-            document.getElementById('main-content').classList.add('hidden');
-            
-            // Show Login Page
+            document.getElementById('app-container').classList.add('hidden');
             document.getElementById('login-page').classList.remove('hidden');
-            document.getElementById('loginForm').reset();
-            
-            // Clear navigation state
-            document.querySelectorAll('.role-menu').forEach(menu => menu.classList.add('hidden'));
 
-            showMessage('info', 'Logout', 'Anda berhasil logout.');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
         }
 
-
-        // --- FUNGSI NAVIGASI DAN LOAD KONTEN ---
-        function loadContent(role, page) {
-            if (role !== currentRole) {
-                showMessage('error', 'Akses Ditolak', 'Anda tidak memiliki izin untuk mengakses role ini.');
-                return;
-            }
-            
-            const container = document.getElementById('content-container');
-            const title = document.getElementById('main-title');
-            const subtitle = document.getElementById('main-subtitle');
-            
-            const templateId = `content-${role}-${page}`;
-            const navId = `nav-${role}-${page}`;
-            const template = document.getElementById(templateId);
-
-            if (!template) {
-                container.innerHTML = `<div class="p-10 bg-red-100 text-red-700 rounded-xl">Error: Template untuk ${templateId} tidak ditemukan.</div>`;
-                return;
-            }
-
-            // 1. Muat Konten Baru
-            container.innerHTML = template.innerHTML;
-            lucide.createIcons();
-
-            // 2. Update Navigasi Aktif
-            document.querySelectorAll('.nav-item').forEach(item => {
+        function setActiveNavItem(clickedItem, role) {
+            // Hapus status 'active' dari semua item di sidebar role ini
+            document.querySelectorAll(`#nav-${role} .nav-item`).forEach(item => {
                 item.classList.remove('active', 'bg-primary', 'text-white', 'shadow-md');
                 item.classList.add('text-gray-600', 'hover:bg-blue-50', 'hover:text-primary');
             });
-            
-            const activeNavItem = document.getElementById(navId);
-            if (activeNavItem) {
-                activeNavItem.classList.add('active', 'bg-primary', 'text-white', 'shadow-md');
-                activeNavItem.classList.remove('text-gray-600', 'hover:bg-blue-50', 'hover:text-primary');
+
+            // Tambahkan status 'active' ke item yang diklik
+            if (clickedItem) {
+                clickedItem.classList.add('active', 'bg-primary', 'text-white', 'shadow-md');
+                clickedItem.classList.remove('text-gray-600', 'hover:bg-blue-50', 'hover:text-primary');
             }
+        }
 
-            // 3. Update Judul Halaman
-            const roleTitles = {
-                'customer': {
-                    'home': ['Beranda', `Selamat datang kembali, ${currentUserName}.`],
-                    'active': ['Pesanan Aktif', 'Lacak status pesanan Anda.'],
-                    'history': ['Riwayat Jasa', 'Lihat transaksi yang telah selesai.'],
-                    'payment': ['Pembayaran & Saldo', 'Kelola Helpin Pay dan metode pembayaran.'],
-                    'settings': ['Pengaturan Akun', 'Perbarui profil dan keamanan Anda.'],
-                },
-                'helpman': {
-                    'home': ['Dashboard Helpman', `Ringkasan performa dan saldo Anda, ${currentUserName}.`],
-                    'requests': ['Permintaan Baru', 'Segera tanggapi permintaan jasa dari pelanggan.'],
-                    'manage': ['Kelola Jasa', 'Atur daftar layanan dan harga Anda.'],
-                    'schedule': ['Kelola Jadwal', 'Tentukan kapan Anda siap bekerja.'],
-                    'earnings': ['Pendapatan & Data', 'Lihat riwayat dan tarik pendapatan.'],
-                },
-                'admin': {
-                    'home': ['Dashboard Super Admin', `Ringkasan operasional dan kesehatan platform, ${currentUserName}.`],
-                    'users': ['Kelola Pengguna', 'Atur Helpman dan Customer.'],
-                    'verify': ['Verifikasi Jasa', 'Persetujuan dokumen Helpman baru.'],
-                    'monitor': ['Monitor Transaksi', 'Lacak komisi dan transaksi real-time.'],
-                    'reports': ['Laporan Keuangan', 'Analisis dan download laporan bisnis.'],
-                }
-            };
 
-            const [newTitle, newSubtitle] = roleTitles[role][page];
-            title.textContent = newTitle;
-            subtitle.textContent = newSubtitle;
+        function loadContent(role, page, clickedItem = null) {
+            // Terapkan status active pada item navigasi
+            setActiveNavItem(clickedItem, role);
 
-            // 4. Tampilkan Menu Samping yang Relevan
+            const container = document.getElementById('content-container');
+            const mainTitle = document.getElementById('main-title');
+            const subTitle = document.getElementById('main-subtitle');
+            const roleDisplay = document.getElementById('current-role-display');
+
+            // Update header and role display
+            roleDisplay.textContent = role;
+            mainTitle.textContent = `${page.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')}`;
+            subTitle.textContent = `Akses: ${role} | User: ${loggedInUser.name}`;
+            
+            // Tampilkan navigasi yang benar
             document.querySelectorAll('.role-menu').forEach(menu => menu.classList.add('hidden'));
             document.getElementById(`nav-${role}`).classList.remove('hidden');
+            
+            let contentTemplateId = '';
+            let defaultTitle = '';
+
+            // Tentukan template konten berdasarkan role dan page
+            if (page === 'home') {
+                contentTemplateId = `content-${role}-home`;
+                defaultTitle = `Dashboard ${role.charAt(0).toUpperCase() + role.slice(1)}`;
+            } else {
+                // Gunakan template umum untuk halaman non-home (simulasi)
+                contentTemplateId = `content-general-page`;
+                defaultTitle = page.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
+            }
+            
+            // Ambil dan muat template
+            const template = document.getElementById(contentTemplateId);
+            container.innerHTML = template.innerHTML;
+            
+            // Perbarui judul utama setelah konten dimuat (jika menggunakan template general)
+            if (contentTemplateId === 'content-general-page') {
+                document.getElementById('page-title-content').textContent = defaultTitle;
+                document.getElementById('page-name-content').textContent = defaultTitle;
+                document.getElementById('page-role-content').textContent = role;
+            }
+
+            // Atur nama di header utama
+            mainTitle.textContent = defaultTitle;
+            
+            lucide.createIcons();
+            showSimulationMessage(`Memuat halaman: ${defaultTitle}`);
         }
 
-        // Fungsi yang dipanggil saat Role Switcher diubah (hanya simulasi)
-        function switchRole(role, defaultPage = 'home') {
-            // Logika ini dinonaktifkan/dihapus karena digantikan oleh login.
-            // Biarkan saja jika ada di HTML, tapi pastikan tidak terhubung ke elemen DOM yang aktif
-        }
-        
-        // --- FUNGSI SIMULASI UTAMA (dipertahankan) ---
-        function rateService(stars) {
-            const starIcons = document.querySelectorAll('#non-ui-content .text-3xl.text-gray-300 i');
-            starIcons.forEach((icon, index) => {
-                const isRated = index < stars;
-                icon.classList.toggle('text-yellow-400', isRated);
-                icon.classList.toggle('fill-yellow-400', isRated);
-                icon.classList.toggle('text-gray-300', !isRated);
-            });
-        }
-
-        function completeTransaction() {
-            showMessage('success', 'Transaksi Selesai', 'Verifikasi berhasil! Helpman sudah dibayar. Terima kasih atas ulasan Anda.');
-        }
+        // --- HELPMAN & CUSTOMER SPECIFIC LOGIC ---
 
         function toggleAvailability() {
             const statusDiv = document.getElementById('availability-status');
@@ -1249,37 +746,28 @@
         
         function handleHelpmanAction(action, item) {
             if (action === 'accept') {
-                showMessage('success', 'Pesanan Diterima', `Anda telah menerima ${item}. Status pesanan telah diubah.`);
-                // Simulasi update konten tanpa reload page
-                if (currentRole === 'helpman') loadContent('helpman', 'home');
+                showMessage('success', 'Pesanan Diterima', `Anda telah menerima ${item}. Status pesanan telah diubah menjadi "Dalam Pengerjaan".`);
             } else if (action === 'reject') {
-                showMessage('info', 'Pesanan Ditolak', `Anda menolak ${item}.`);
+                showMessage('info', 'Pesanan Ditolak', `Anda menolak ${item}. Pesanan akan dialihkan ke Helpman lain.`);
             } else if (action === 'complete') {
-                 showMessage('success', 'Jasa Selesai', `Tandai ${item} sebagai Selesai. Menunggu verifikasi Customer.`);
-            } else if (action === 'block') {
-                 showMessage('error', 'Helpman Diblokir', `Helpman ${item} telah diblokir.`);
+                 showMessage('success', 'Jasa Selesai', `Tandai ${item} sebagai Selesai. Menunggu verifikasi dari Customer.`);
             }
         }
-
-        function handleAdminAction(action, item) {
+        
+        function handleAdminAction(action, userId) {
             if (action === 'approve') {
-                showMessage('success', 'Verifikasi Berhasil', `Helpman ${item} disetujui. Akses dashboard diberikan.`);
+                showMessage('success', 'Verifikasi Berhasil', `Helpman ${userId} berhasil disetujui. Akses dashboard diberikan.`);
             } else if (action === 'reject') {
-                showMessage('error', 'Verifikasi Ditolak', `Helpman ${item} ditolak.`);
-            } else if (action === 'block') {
-                showMessage('error', 'Pengguna Diblokir', `Pengguna ${item} telah diblokir.`);
+                showMessage('error', 'Verifikasi Ditolak', `Helpman ${userId} ditolak. Notifikasi penolakan akan dikirim.`);
             }
         }
 
+        // --- INISIALISASI ---
 
-        // Inisialisasi: Halaman Login harus muncul pertama
         document.addEventListener('DOMContentLoaded', () => {
-             // Pastikan semua UI dashboard tersembunyi saat pertama load
-             document.getElementById('sidebar').classList.add('hidden');
-             document.getElementById('main-content').classList.add('hidden');
-             // Login page harus ditampilkan secara default
-             document.getElementById('login-page').classList.remove('hidden');
-             lucide.createIcons(); // Render icons on load
+            // Pastikan halaman login terlihat saat startup
+            document.getElementById('login-page').classList.remove('hidden');
+            document.getElementById('app-container').classList.add('hidden');
         });
     </script>
 
